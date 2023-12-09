@@ -1,8 +1,8 @@
 import os
 import boto3
 
-from dotenv import load_dotenv
-load_dotenv()
+# from dotenv import load_dotenv
+# load_dotenv()
 
 def get_dynamodb_conn():
     dynamodb = boto3.resource(

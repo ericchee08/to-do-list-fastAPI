@@ -88,3 +88,19 @@ async def update_todo(todo_objects: List[dict]):
 async def delete_todo(todo_id: str):
     response = table.delete_item(Key={'id': todo_id})
     return response
+
+@app.delete("/todos/deleteActiveItems")
+async def delete_active_items():
+    # Scan for all items where active_item is equal to 1
+    response = table.scan(
+        FilterExpression="active_item = :active_item",
+        ExpressionAttributeValues={':active_item': 1}
+    )
+
+    # Delete each item found
+    deleted_items = []
+    for item in response.get('Items', []):
+        deleted_item = table.delete_item(Key={'id': item['id']})
+        deleted_items.append(deleted_item)
+
+    return {"message": "Deleted items with active_item equal to 1", "deleted_items": deleted_items}
